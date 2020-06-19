@@ -45,17 +45,15 @@ sudo apt-get install \
 	swig
 ```
 
-### Install OP25
+### OP25
 
 ```bash
-sudo apt-get install git
-cd ~
 git clone git://github.com/xychelsea/op25
 cd op25
 ./install.sh 
 ```
 
-### Install GNUPlot-X11
+### GNUPlot-X11
 
 This optional package enables you to see nice graphs within X11 windowing systems.
 
@@ -63,7 +61,7 @@ This optional package enables you to see nice graphs within X11 windowing system
 sudo apt-get install gnuplot-x11
 ```
 
-### Install liquidsoap
+### liquidsoap
 
 This package enables the liquidsoap audio and video streaming language.
 
@@ -71,7 +69,7 @@ This package enables the liquidsoap audio and video streaming language.
 sudo apt-get install liquidsoap
 ```
 
-### Install PulseAudio
+### PulseAudio
 
 PulseAudio is optional, but preferred over default alsa.
 
@@ -95,6 +93,12 @@ Follow prompts and set up appropriate passwords. Then, using your favorite text 
   <port>8000</port>
   <shoutcast-mount>/op25</shoutcast-mount>
 </listen-socket>
+```
+
+### GQRX
+
+```bash
+sudo apt-get install gqrx-sdr
 ```
 
 ## Configuration
@@ -130,7 +134,7 @@ tail -f stderr.2
 ```
 
 ### Making liquidsoap and op25 start automatically at boot
----------------------------------------------------------
+
 Automatically starting liquidsoap and op25 at boot time is best handled using
 the systemd services manager "systemctl".  Two service scripts are required, and
 although examples are provided, these should best be edited/customized to match
@@ -151,10 +155,14 @@ sudo cp ~/op25/op25/gr-op25_repeater/apps/op25-rx.service /etc/systemd/system
 ```
 
 Next enable and then start the two services:
+
+```bash
 sudo systemctl enable op25-liq op25-rx
 sudo systemctl start op25-liq op25-rx
+```
 
 You can subsequently stop the services by issuing the following command:
+
 sudo systemctl stop op25-rx
 or
 sudo systemctl stop op25-rx op25-liq
