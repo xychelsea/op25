@@ -1,9 +1,8 @@
 # OP25
 
-Forked from git://github.com/boatbod/op25 "max" branch on June 19, 2020
+Forked from [boatbod/op25](git://github.com/boatbod/op25) "master" branch on June 19, 2020
 
 Updated June 19, 2020
-
 
 ## Index:
 
@@ -20,31 +19,147 @@ Updated June 19, 2020
 - P25 Sample files (for testing)
 - Wikis
 - OP25 Dev Mailing List
-- OP25 Hardware
 
-To do software-defined radio, you will need:
+# Installation
 
-an SDR “dongle” that will plug in to your computer or raspberry pi’s USB port.
-The dongle will come with an antennae that will plug into it.
-You can purchase one of several “SDR Kits” below for under $30 (The “kits” will include the dongle and an antennae)
-Here are some example “kits”-
+These high level instructions will lead you through installing op25 and liquidsoap
+on any Debian based Linux system. It is geared towards the Raspberry Pi3B which is
+inexpensive but yet just powerful enough to receive, decode and stream P25 trunked
+radio system utilizing either Phase 1 or Phase 2 audio codecs.
 
-Nooelec NESDR Mini 2+ 0.5PPM TCXO RTL-SDR & ADS-B USB Receiver Set w/Antenna, Suction Mount, Female SMA Adapter & Remote Control, RTL2832U & R820T2 Tuner. Low-Cost Software Defined Radio. (Amazon-$24.95)
-https://www.amazon.com/dp/B00VZ1AWQA?psc=1&ref=ppx_pop_dt_b_product_details
+It is possible to configure and use OP25 with other streaming software (such as Darkice)
+but this setup has the advantage of completely avoiding use of the ALSA sound subsystem
+with has proven itself to be someway quirky and prone to problems particularly when using
+the loopback driver (aloop).
 
-# Raspberry Pi
+There are many refinements which should be made to these instructions, particularly how
+to configure liquidsoap and op25 to properly auto-start at boot time.
+
+### Install OP25
+
+```bash
+sudo apt-get install git
+cd ~
+git clone git://github.com/xychelsea/op25
+cd op25
+./install.sh 
+```
+
+### Install GNUPlot-X11 (optional)
+
+```bash
+sudo apt-get install gnuplot-x11
+```
+
+### Install liquidsoap
+
+```bash
+sudo apt-get install liquidsoap liquidsoap-plugin-all
+```
+
+### Install PulseAudio (optional, preferred over alsa)
+
+```bash
+sudo apt-get install pulseaudio pulseaudio-utils
+```
+
+### Install Icecase (optional)
+
+```bash
+sudo apt-get install icecast2
+Follow prompts and set up appropriate passwords
+Edit /etc/icecast/icecast.xml and define your mount point(s):
+sudo vi /etc/icecast2/icecast.xml
+
+```xml
+<!-- You may have multiple <listener> elements -->
+ <listen-socket>
+  <port>8000</port>
+  <shoutcast-mount>/op25</shoutcast-mount>
+</listen-socket>
+```
+
+5. Configure op25
+-----------------
+Set up rx.py command line options, trunk.tsv, meta.json and other files necessary to
+make a working instance of op25. Edit op25.liq to configure local sound options and/or
+streaming to icecast server.
+
+6. Run op25 and liquidsoap
+--------------------------
+Terminal #1:
+cd ~/op25/op25/gr-op25_repeater/apps
+./rx.py --nocrypt --args "rtl=0" --gains 'lna:36' -S 57600 -q 0 -d 0 -v 1 -2 -T trunk.tsv -V -w -M meta.json 2> stderr.2
+
+(In particular note the new -w parameter, that allows liquid to connect)
+
+Terminal #2:
+cd ~/op25/op25/gr-op25_repeater/apps
+./op25.liq
+
+Terminal #3: (optional log window)
+cd ~/op25/op25/gr-op25_repeater/apps
+tail -f stderr.2
+
+7. Making liquidsoap and op25 start automatically at boot
+---------------------------------------------------------
+Automatically starting liquidsoap and op25 at boot time is best handled using
+the systemd services manager "systemctl".  Two service scripts are required, and
+although examples are provided, these should best be edited/customized to match
+your exact environment.  As written they assume /home/pi is the home directory
+which may or may not be the case...
+
+You will also need to edit op25.sh (started by op25-rx.service) to have the command line parameters that you normally use to start rx.py
+
+Another factor to consider is that op25 should only be auto-started at boot
+time when it has been configured for the http terminal type.  Auto-starting
+the default curses terminal is not going to be successful. An example of this is to add -l http:127.0.0.1:12345
+
+First copy the two service files into /etc/systemd/system:
+sudo cp ~/op25/op25/gr-op25_repeater/apps/op25-liq.service /etc/systemd/system
+sudo cp ~/op25/op25/gr-op25_repeater/apps/op25-rx.service /etc/systemd/system
+
+Next enable and then start the two services:
+sudo systemctl enable op25-liq op25-rx
+sudo systemctl start op25-liq op25-rx
+
+You can subsequently stop the services by issuing the following command:
+sudo systemctl stop op25-rx
+or
+sudo systemctl stop op25-rx op25-liq
+
+8. Icecast2 low-latency setups (optional)
+---------------------------------------
+Buffering may cause the stream to lag behind the metadata.
+To decrease latency for low-latency environments, such as 
+highspeed networks, edit /etc/icecast2/icecast.xml to 
+disable Icecast2 burst-on-connect and reduce burst-size.
+
+sudo vi /etc/icecast2/icecast.xml
+
+<!-- If enabled, this will provide a burst of data when a client
+	 first connects, thereby significantly reducing the startup
+	 time for listeners that do substantial buffering. However,
+	 it also significantly increases latency between the source
+	 client and listening client.  For low-latency setups, you
+	 might want to disable this. -->
+<burst-on-connect>0</burst-on-connect>
+<!-- same as burst-on-connect, but this allows for being more
+	 specific on how much to burst. Most people won't need to
+	 change from the default 64k. Applies to all mountpoints  -->
+<burst-size>0</burst-size>
 
 
-We used a 3 B+ successfully. We have instructions here about how to set it up.
 
-We explored using a Raspberry Pi Zero. With a single core, it takes a few hours to compile and install. OP25 does run, but not very efficiently.
+## Hardware Requirements
 
-(So we decided to put pi zeros on hold as a target and focus on pi 3, and look at pi 2 and 4 as options first before going back to zeros.)
+To run OP25 with software-defined radio, you will need an SDR "dongle" with antannae that plugs into your desktop, laptop, or Raspberry Pi USB port. You can usually purchase one of several SDR kits for under $30
 
-You can experiment with getting a bigger antennae. We experimented using a +5db 915Mhz antennas with hacked together connector and were able to get even stronger reception.
+## Raspberry Pi
 
-OP25 Software Stack
------
+Raspberry Pi 3B+ or newer is recommended. Using a Raspberry Pi Zero, with a single processor core, can take a few hours to compile and install. OP25 does run on a Raspberry Pi Zero, but not very efficiently.
+
+## OP25 Software Stack
 
 Our OP25 Code fork on Github https://github.com/AaronSwartzDay-SSP/op25
 GNU Radio source https://github.com/gnuradio/gnuradio
