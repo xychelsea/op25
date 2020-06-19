@@ -19,7 +19,7 @@ the loopback driver (aloop).
 There are many refinements which should be made to these instructions, particularly how
 to configure liquidsoap and op25 to properly auto-start at boot time.
 
-### Prerequisites
+### Build Prerequisites
 
 ```bash
 sudo apt-get update
@@ -68,7 +68,7 @@ sudo apt-get install gnuplot-x11
 This package enables the liquidsoap audio and video streaming language.
 
 ```bash
-sudo apt-get install liquidsoap liquidsoap-plugin-all
+sudo apt-get install liquidsoap
 ```
 
 ### Install PulseAudio
