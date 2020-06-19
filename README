@@ -1,28 +1,26 @@
-OP25
------------
+# OP25
+
 Forked from git://github.com/boatbod/op25 "max" branch on June 19, 2020
 
 Updated June 19, 2020
 
 
-Index:
------
+## Index:
 
-OP25 Hardware
-OP25 Software
-OP25 Install Guides
-Coming Soon: Our ASD OP25 Install Guide
-OP25 Troubleshooting Info
-Tech Support
-OP25 References
-Tutorials
-Websites for looking up frequencies for a given geographical area
-Standards
-P25 Sample files (for testing)
-Wikis
-OP25 Dev Mailing List
-OP25 Hardware
-
+- OP25 Hardware
+- OP25 Software
+- OP25 Install Guides
+- Coming Soon: Our ASD OP25 Install Guide
+- OP25 Troubleshooting Info
+- Tech Support
+- OP25 References
+- Tutorials
+- Websites for looking up frequencies for a given geographical area
+- Standards
+- P25 Sample files (for testing)
+- Wikis
+- OP25 Dev Mailing List
+- OP25 Hardware
 
 To do software-defined radio, you will need:
 
@@ -34,8 +32,8 @@ Here are some example “kits”-
 Nooelec NESDR Mini 2+ 0.5PPM TCXO RTL-SDR & ADS-B USB Receiver Set w/Antenna, Suction Mount, Female SMA Adapter & Remote Control, RTL2832U & R820T2 Tuner. Low-Cost Software Defined Radio. (Amazon-$24.95)
 https://www.amazon.com/dp/B00VZ1AWQA?psc=1&ref=ppx_pop_dt_b_product_details
 
-Raspberry Pi
------
+# Raspberry Pi
+
 
 We used a 3 B+ successfully. We have instructions here about how to set it up.
 
