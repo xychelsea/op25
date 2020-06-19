@@ -20,7 +20,7 @@ Updated June 19, 2020
 - Wikis
 - OP25 Dev Mailing List
 
-# Installation
+## Installation
 
 These high level instructions will lead you through installing op25 and liquidsoap
 on any Debian based Linux system. It is geared towards the Raspberry Pi3B which is
@@ -45,7 +45,9 @@ cd op25
 ./install.sh 
 ```
 
-### Install GNUPlot-X11 (optional)
+### Install GNUPlot-X11
+
+This optional package enables you to see nice graphs within X11 windowing systems.
 
 ```bash
 sudo apt-get install gnuplot-x11
@@ -53,23 +55,29 @@ sudo apt-get install gnuplot-x11
 
 ### Install liquidsoap
 
+This package enables the liquidsoap audio and video streaming language.
+
 ```bash
 sudo apt-get install liquidsoap liquidsoap-plugin-all
 ```
 
-### Install PulseAudio (optional, preferred over alsa)
+### Install PulseAudio
+
+PulseAudio is optional, but preferred over default alsa.
 
 ```bash
 sudo apt-get install pulseaudio pulseaudio-utils
 ```
 
-### Install Icecase (optional)
+### Icecast
+
+The Icecast server is optional
 
 ```bash
 sudo apt-get install icecast2
-Follow prompts and set up appropriate passwords
-Edit /etc/icecast/icecast.xml and define your mount point(s):
-sudo vi /etc/icecast2/icecast.xml
+
+```
+Follow prompts and set up appropriate passwords. Then, using your favorite text editor, you insert something like this XML snippet:
 
 ```xml
 <!-- You may have multiple <listener> elements -->
@@ -79,29 +87,39 @@ sudo vi /etc/icecast2/icecast.xml
 </listen-socket>
 ```
 
-5. Configure op25
------------------
+## Configuration
+
 Set up rx.py command line options, trunk.tsv, meta.json and other files necessary to
 make a working instance of op25. Edit op25.liq to configure local sound options and/or
 streaming to icecast server.
 
-6. Run op25 and liquidsoap
---------------------------
+## Run OP25 and liquidsoap
+
+The screen tool can enable you to detach terminal screens.
+
 Terminal #1:
+
+```bash
 cd ~/op25/op25/gr-op25_repeater/apps
 ./rx.py --nocrypt --args "rtl=0" --gains 'lna:36' -S 57600 -q 0 -d 0 -v 1 -2 -T trunk.tsv -V -w -M meta.json 2> stderr.2
+```
 
 (In particular note the new -w parameter, that allows liquid to connect)
 
 Terminal #2:
+
+```bash
 cd ~/op25/op25/gr-op25_repeater/apps
 ./op25.liq
+```
 
-Terminal #3: (optional log window)
+Terminal #3:
+```bash
 cd ~/op25/op25/gr-op25_repeater/apps
 tail -f stderr.2
+```
 
-7. Making liquidsoap and op25 start automatically at boot
+### Making liquidsoap and op25 start automatically at boot
 ---------------------------------------------------------
 Automatically starting liquidsoap and op25 at boot time is best handled using
 the systemd services manager "systemctl".  Two service scripts are required, and
@@ -116,8 +134,11 @@ time when it has been configured for the http terminal type.  Auto-starting
 the default curses terminal is not going to be successful. An example of this is to add -l http:127.0.0.1:12345
 
 First copy the two service files into /etc/systemd/system:
+
+```bash
 sudo cp ~/op25/op25/gr-op25_repeater/apps/op25-liq.service /etc/systemd/system
 sudo cp ~/op25/op25/gr-op25_repeater/apps/op25-rx.service /etc/systemd/system
+```
 
 Next enable and then start the two services:
 sudo systemctl enable op25-liq op25-rx
@@ -128,8 +149,8 @@ sudo systemctl stop op25-rx
 or
 sudo systemctl stop op25-rx op25-liq
 
-8. Icecast2 low-latency setups (optional)
----------------------------------------
+### Icecast2 low-latency setups (optional)
+
 Buffering may cause the stream to lag behind the metadata.
 To decrease latency for low-latency environments, such as 
 highspeed networks, edit /etc/icecast2/icecast.xml to 
@@ -179,33 +200,21 @@ Docker install: https://github.com/lysol/op25-docker
 Installation
 -----
 
-Based on installation notes from testing at [Noisebridge](https://www.noisebridge.net/OP25)
 
-How to Install OP25 and LiquidSoap on a Raspberry Pi3 Raspbian Stretch
-https://github.com/AaronSwartzDay-SSP/op25/blob/master/README-rpi3-liquidsoap
-
-Osmocom OP25 install instructions
-https://osmocom.org/projects/op25/wiki/InstallInstructionsPage
-
-All Your SDR Software In A Handy Raspberry Pi Image, by Jenny List for Hackaday (goes with SDR Linux Distro for Raspberry Pi below)
-https://hackaday.com/2019/12/20/all-your-sdr-software-in-a-handy-raspberry-pi-image/
-
- 
-
-
-
-In this photo below, we are just using an old rtl-sdr dongle with a wifi antenna (not optimal for frequency) and a pi3 b+, other dongles are btter/newer same chip though Realtek RTL2838
+- Installation notes from testing at [Noisebridge](https://www.noisebridge.net/OP25)
+- Osmocom OP25 [install instructions](https://osmocom.org/projects/op25/wiki/InstallInstructionsPage)
+- All Your SDR Software In A [Handy Raspberry Pi Image](https://hackaday.com/2019/12/20/all-your-sdr-software-in-a-handy-raspberry-pi-image/), by Jenny List for Hackaday (goes with SDR Linux Distro for Raspberry Pi below)
 
 
 
 Troubleshooting Info
-OP25 “Q & A” page
+- OP25 “Q & A” page
 https://osmocom.org/projects/op25/wiki/QandAs
 
-OP25 overview of bugs and features
+- OP25 overview of bugs and features
 https://osmocom.org/projects/op25
 
-Op25 task list
+- OP25 task list
 https://osmocom.org/projects/op25/wiki
 
 Issue: rtl modules not showing up in gnuradio directory (installing to the wrong directory)
@@ -213,29 +222,19 @@ Fix:
 
 Photo of Plotting: “We also got plotting working, which makes the reception audible too” (which program is that?)
 
-Tech Support
-Contact us at aaronswartzday(at)protonmail.com and we will get your question answered.
+## Resources
 
-Tutorials
-Basic
+### Tutorials
 
-OP25 For Dummies – Or how to build a police scanner for $30 (Part 1)
-https://www.hagensieker.com/wordpress/2018/07/17/op25-for-dummies/
+- [OP25 For Dummies](https://www.hagensieker.com/wordpress/2018/07/17/op25-for-dummies/) – Or how to build a police scanner for $30 (Part 1)
+- Trunked Radio: [A Guide](https://www.andrewmohawk.com/2020/06/12/trunked-radio-a-guide/) (June 12, 2020) by Andrew Nohawk
+- [Introductory Tour of the GNU Radio Project](http://www.joshknows.com/gnuradio), by Josh Blum
+- [GNU Radio Companion](https://wiki.gnuradio.org/index.php/Guided_Tutorial_GRC)
 
-Trunked Radio: A Guide (June 12, 2020) by Andrew Nohawk
-https://www.andrewmohawk.com/2020/06/12/trunked-radio-a-guide/
+### Background on Software Defined Radio
 
-Introductory Tour of the GNU Radio Project, by Josh Blum
-http://www.joshknows.com/gnuradio
-
-GNU Radio Companion
-https://wiki.gnuradio.org/index.php/Guided_Tutorial_GRC
-
-Background on Software Defined Radio:
-
-Wikipedia page on SDR (Software Defined Radio)  https://en.wikipedia.org/wiki/Software-defined_radio#RTL-SDR
-
-SDR demonstration (Wide-band WebSDR) from the amateur radio club ETGD at the University of Twentem in the Netherlands http://websdr.ewi.utwente.nl:8901/
+- [Wikipedia Article](https://en.wikipedia.org/wiki/Software-defined_radio#RTL-SDR) on SDR (Software Defined Radio)
+- [SDR demonstration](http://websdr.ewi.utwente.nl:8901/) (Wide-band WebSDR) from the amateur radio club ETGD at the University of Twentem in the Netherlands 
 
 Specific
 
@@ -251,25 +250,19 @@ https://www.taitradioacademy.com/topic/benefits-of-p25-1/
 Mapping BER and Signal Strength of P25 Radio SystemsS412E LMR Master (Anritsu.com)
 https://dl.cdn-anritsu.com/en-us/test-measurement/files/Application-Notes/Application-Note/11410-00508C.pdf
 
-Standards
-APCO International’s Project 25 (P25) Page (APCO = Association of Public-Safety Communications Officials International, Inc.)
+### Standards
+- APCO International’s Project 25 (P25) Page (APCO = Association of Public-Safety Communications Officials International, Inc.)
 https://www.apcointl.org/spectrum-management/spectrum-management-resources/interoperability/p25/
 
-APCO International’s Project 25 Organizational Overview
+- APCO International’s Project 25 Organizational Overview
 https://www.apcointl.org/spectrum-management/spectrum-management-resources/interoperability/p25/p25-organizational-overview/
 
-Steering Committee Approved P25 Standards Document list June 2019
+- Steering Committee Approved P25 Standards Document list June 2019
 http://www.project25.org/images/stories/ptig/P25_SC_19-06-002-R1_Approved_P25_TIA_Standards_-_June_2019.pdf
 
-Project 25’s Statement of Requirements (approved in 2013)
+- Project 25’s Statement of Requirements (approved in 2013)
 http://project25.org/images/stories/ptig/docs/Technical_Documents/12131211_Approved_P25_SoR_12-11-13.pdf
 
-P25 Sample files (for testing)
-For examples: When monitoring Alameda County, California (“Alameda P25”), we found:
-
-6 voice channels, using the frequency 772.843750 Mhz
-they are being broadcast on command frequency:
-“NAC 0x1f1 WACN 0xbee00 SYSID 0x1d1”
 
 OP25 dev list sample page
 https://osmocom.org/projects/op25/wiki/SamplesPage
@@ -309,8 +302,8 @@ OP25 Mailing list archives: https://lists.osmocom.org/pipermail/op25-dev/
 
 OP25 Mailing list archives by subject: https://lists.osmocom.org/pipermail/op25-dev/2012/subject.html
 
-Other Resources
------
+### Other Resources
+
 Websites for looking up frequencies for a given geographical area
 
 - [The Radio Reference Database](https://www.radioreference.com/apps/db/) (United States)
