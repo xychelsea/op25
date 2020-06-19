@@ -1,7 +1,6 @@
 #! /bin/sh
 
 # op25 install script for debian based systems
-# including ubuntu 14/16 and raspbian
 
 if [ ! -d op25/gr-op25 ]; then
 	echo ====== error, op25 top level directories not found
@@ -12,7 +11,25 @@ fi
 
 sudo apt-get update
 sudo apt-get build-dep gnuradio
-sudo apt-get install gnuradio gnuradio-dev gr-osmosdr librtlsdr-dev libuhd-dev  libhackrf-dev libitpp-dev libpcap-dev cmake git swig build-essential pkg-config doxygen python-numpy python-waitress python-requests gnuplot-x11
+sudo apt-get install \
+	build-essential \
+	cmake \
+	doxygen \
+	git \
+	gnuradio \
+	gnuradio-dev \
+	gnuplot-x11 \
+	gr-osmosdr \
+	libhackrf-dev \
+	libitpp-dev \
+	libpcap-dev \
+	librtlsdr-dev \
+	libuhd-dev \
+	pkg-config \
+	python-numpy \
+	python-requests \
+	python-waitress \
+	swig
 
 if [ ! -f /etc/modprobe.d/blacklist-rtl.conf ]; then
 	echo ====== installing blacklist-rtl.conf
@@ -26,4 +43,3 @@ cmake ../
 make
 sudo make install
 sudo ldconfig
-
