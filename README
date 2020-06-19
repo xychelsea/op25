@@ -1,38 +1,203 @@
-Forked from git://git.osmocom.org/op25 "max" branch on 9/10/2017
-Up to date with "max" branch as of 3/3/2018
+OP25
+-----
+Forked from git://github.com/boatbod/op25 "max" branch on June 19, 2020
 
-Many changes:
-- udp python audio server sockaudio.py and remote player audio.py
-- wireshark fixes (experimental)
-- ability to configure NAC 0x000 in trunk.tsv and have system use first NAC decoded
-- integrated N8UR logging changes to trunking.py
-- ability to adjust fine tuning in real time (,./<> keys in terminal) 
-- ability to dynamically resize the curses terminal
-- ability to dunamically turn plots on and off from the terminal (keys 1-5)
-- new 'mixer' output plot (terminal key 5) to assist with fine tuning
-- reworked trunking hold/release logic that improves Phase 1 audio on some systems
-- decoding and logging of encryption sync info ("ESS") at log level 10 (-v 10)
-- ability to silence the playing of encrypted audio
-- encrypted audio flag shown on terminal screen
-- source radio id displayed on terminal screen (if available)
-- supports IP addresses or host names for --wireshark-host (-W) parameter
-- decode and pass voice channel sourced trunk signaling up to trunking module
-- added optional trunk group priority parameter to end of tgid-tags.tsv file
-- added ability to handle ranges of tgid in blacklist/whitelist files
+Updated June 19, 2020
 
-New command line options:
-  --fine-tune      : sub-ppm tuning adjustment
-  --wireshark-port : facilitates multiple instances of rx.py
-  --udp-player     : enable built-in audio player
-  --nocrypt        : silence encrypted audio
 
-NOTE 1: using the --nocrypt command line option will silence encrypted audio, but the trunking logic will cause the application to remain on the active tgid until the transmission ends.  It is generally preferable to blacklist tgids that are always encrypted rather than simply silence them.  Use the --nocrypt functionality to silence occasional encrypted transmissions on mixed use tgids.
+Index:
+-----
 
-NOTE 2: trunk id to tag mapping file (tgid-tags.tsv) can contain an optional 3rd numeric parameter to be used as the trunk priority when simultaneous calls are present on the system being monitored.  Default priority is 3 if not explicitly specified.  Lower numeric value = higher priority.  Data columns are separated by a single TAB character.
+OP25 Hardware
+OP25 Software
+OP25 Install Guides
+Coming Soon: Our ASD OP25 Install Guide
+OP25 Troubleshooting Info
+Tech Support
+OP25 References
+Tutorials
+Websites for looking up frequencies for a given geographical area
+Standards
+P25 Sample files (for testing)
+Wikis
+OP25 Dev Mailing List
+OP25 Hardware
 
-e.g.
-11501	TB FIRE DISP	2
-11502	TB FIRE TAC2	3
-11503	TB FIRE TAC3	3
-11504	TB FIRE TAC4	4
-11505	TB FIRE TAC5	3 
+
+To do software-defined radio, you will need:
+
+an SDR “dongle” that will plug in to your computer or raspberry pi’s USB port.
+The dongle will come with an antennae that will plug into it.
+You can purchase one of several “SDR Kits” below for under $30 (The “kits” will include the dongle and an antennae)
+Here are some example “kits”-
+
+Nooelec NESDR Mini 2+ 0.5PPM TCXO RTL-SDR & ADS-B USB Receiver Set w/Antenna, Suction Mount, Female SMA Adapter & Remote Control, RTL2832U & R820T2 Tuner. Low-Cost Software Defined Radio. (Amazon-$24.95)
+https://www.amazon.com/dp/B00VZ1AWQA?psc=1&ref=ppx_pop_dt_b_product_details
+
+Raspberry Pi
+-----
+
+We used a 3 B+ successfully. We have instructions here about how to set it up.
+
+We explored using a Raspberry Pi Zero. With a single core, it takes a few hours to compile and install. OP25 does run, but not very efficiently.
+
+(So we decided to put pi zeros on hold as a target and focus on pi 3, and look at pi 2 and 4 as options first before going back to zeros.)
+
+You can experiment with getting a bigger antennae. We experimented using a +5db 915Mhz antennas with hacked together connector and were able to get even stronger reception.
+
+OP25 Software Stack
+-----
+
+Our OP25 Code fork on Github https://github.com/AaronSwartzDay-SSP/op25
+GNU Radio source https://github.com/gnuradio/gnuradio
+Mac install: https://wiki.gnuradio.org/index.php/MacInstall
+PC install: https://wiki.gnuradio.org/index.php/WindowsInstall
+Debian package for testing: https://github.com/AaronSwartzDay-SSP/op25/tree/master/debian
+The SDR Linux Distro for Raspberry Pi
+A modified Raspbian image with the latest SDR software pre-installed and ready to go. Compatible with every Raspberry Pi.(Pre-built Raspberry Pi Image with GNURadio and these software radio tools: SDR Angel, Soapy Remote, GQRX, GNURadio, LimeUtil, and LimeVNA)Note: When you use this, you still have to compile/install op25, but this can be completed successfully and easily on pi3 with install script.
+https://pisdr.luigifreitas.me
+All Your SDR Software In A Handy Raspberry Pi Image, by Jenny List for Hackaday (goes with SDR Linux Distro for Raspberry Pi below)
+https://hackaday.com/2019/12/20/all-your-sdr-software-in-a-handy-raspberry-pi-image/
+GQRX (During testing, we used gqrx to verify the dongle was working and to check for p25 traffic. This was *before* we started trying to use GNURadio w/OP25 installed.)
+Gqrx is an open source software defined radio receiver (SDR) powered by the GNU Radio and the Qt graphical toolkit. Gqrx supports many of the SDR hardware available, including Airspy, Funcube Dongles, rtl-sdr, HackRF and USRP devices. See supported devices for a complete list. https://gqrx.dk/download
+DragonOS LTS – an out-of-the-box Lubuntu 18.04 based x86_64 operating system for anyone interested in software defined radios. https://sourceforge.net/projects/dragonos-lts/
+Docker install: https://github.com/lysol/op25-docker
+
+Installation
+-----
+
+Based on installation notes from testing at [Noisebridge](https://www.noisebridge.net/OP25)
+
+How to Install OP25 and LiquidSoap on a Raspberry Pi3 Raspbian Stretch
+https://github.com/AaronSwartzDay-SSP/op25/blob/master/README-rpi3-liquidsoap
+
+Osmocom OP25 install instructions
+https://osmocom.org/projects/op25/wiki/InstallInstructionsPage
+
+All Your SDR Software In A Handy Raspberry Pi Image, by Jenny List for Hackaday (goes with SDR Linux Distro for Raspberry Pi below)
+https://hackaday.com/2019/12/20/all-your-sdr-software-in-a-handy-raspberry-pi-image/
+
+ 
+
+
+
+In this photo below, we are just using an old rtl-sdr dongle with a wifi antenna (not optimal for frequency) and a pi3 b+, other dongles are btter/newer same chip though Realtek RTL2838
+
+
+
+Troubleshooting Info
+OP25 “Q & A” page
+https://osmocom.org/projects/op25/wiki/QandAs
+
+OP25 overview of bugs and features
+https://osmocom.org/projects/op25
+
+Op25 task list
+https://osmocom.org/projects/op25/wiki
+
+Issue: rtl modules not showing up in gnuradio directory (installing to the wrong directory)
+Fix:
+
+Photo of Plotting: “We also got plotting working, which makes the reception audible too” (which program is that?)
+
+Tech Support
+Contact us at aaronswartzday(at)protonmail.com and we will get your question answered.
+
+Tutorials
+Basic
+
+OP25 For Dummies – Or how to build a police scanner for $30 (Part 1)
+https://www.hagensieker.com/wordpress/2018/07/17/op25-for-dummies/
+
+Trunked Radio: A Guide (June 12, 2020) by Andrew Nohawk
+https://www.andrewmohawk.com/2020/06/12/trunked-radio-a-guide/
+
+Introductory Tour of the GNU Radio Project, by Josh Blum
+http://www.joshknows.com/gnuradio
+
+GNU Radio Companion
+https://wiki.gnuradio.org/index.php/Guided_Tutorial_GRC
+
+Background on Software Defined Radio:
+
+Wikipedia page on SDR (Software Defined Radio)  https://en.wikipedia.org/wiki/Software-defined_radio#RTL-SDR
+
+SDR demonstration (Wide-band WebSDR) from the amateur radio club ETGD at the University of Twentem in the Netherlands http://websdr.ewi.utwente.nl:8901/
+
+Specific
+
+APCO P25 Security Revisited – The Practical Attacks! – Matt Robert (Security analysis and tips from one of the founders of the OP25 dev list
+https://www.youtube.com/watch?v=OumDnhO7veg
+
+World’s cheapest P25 receiver w/ decryption: GNU Radio + OP25 + $20 RTL2832 DVB-T Dongle (recommended by OP25 list) 
+https://youtu.be/wShOLgW2tmI
+
+Introduction to P25 – Radio Academy
+https://www.taitradioacademy.com/topic/benefits-of-p25-1/
+
+Mapping BER and Signal Strength of P25 Radio SystemsS412E LMR Master (Anritsu.com)
+https://dl.cdn-anritsu.com/en-us/test-measurement/files/Application-Notes/Application-Note/11410-00508C.pdf
+
+Standards
+APCO International’s Project 25 (P25) Page (APCO = Association of Public-Safety Communications Officials International, Inc.)
+https://www.apcointl.org/spectrum-management/spectrum-management-resources/interoperability/p25/
+
+APCO International’s Project 25 Organizational Overview
+https://www.apcointl.org/spectrum-management/spectrum-management-resources/interoperability/p25/p25-organizational-overview/
+
+Steering Committee Approved P25 Standards Document list June 2019
+http://www.project25.org/images/stories/ptig/P25_SC_19-06-002-R1_Approved_P25_TIA_Standards_-_June_2019.pdf
+
+Project 25’s Statement of Requirements (approved in 2013)
+http://project25.org/images/stories/ptig/docs/Technical_Documents/12131211_Approved_P25_SoR_12-11-13.pdf
+
+P25 Sample files (for testing)
+For examples: When monitoring Alameda County, California (“Alameda P25”), we found:
+
+6 voice channels, using the frequency 772.843750 Mhz
+they are being broadcast on command frequency:
+“NAC 0x1f1 WACN 0xbee00 SYSID 0x1d1”
+
+OP25 dev list sample page
+https://osmocom.org/projects/op25/wiki/SamplesPage
+
+Sigidwiki.com Signal Identification Guide
+https://www.sigidwiki.com/wiki/Project_25_(P25)#Audio_Samples
+
+Samples from the osmocom developer website
+http://people.osmocom.org/laforge/tmp/p25-samples/
+
+OP25 Flow Graph
+http://svn.spench.net/main/gr-baz/samples/OP25.grc
+
+OP25 Decoder Block Flow Graph
+https://wiki.spench.net/wiki/Gr-baz#op25
+
+Sample GRC flowgraphs demonstrating the use of some of the above blocks
+https://wiki.spench.net/wiki/Gr-baz#samples
+
+OP25 Wikis
+Sound file of coded audio (perhaps create a longer one?)
+
+OP25 ad-hoc working group (they wrote OP25)
+https://osmocom.org/projects/op25/wiki
+
+Sigidwiki.com Signal Identification Guide
+https://www.sigidwiki.com/wiki/Project_25_(P25)
+
+APCO-25 Page on RadioReference Wiki: https://wiki.radioreference.com/index.php/APCO_Project_25
+
+Project 25 (P25 or APCO-25) on wikipedia: https://en.wikipedia.org/wiki/Project_25
+
+ 
+
+OP25 Developer Mailing List Archives
+OP25 Mailing list archives: https://lists.osmocom.org/pipermail/op25-dev/
+
+OP25 Mailing list archives by subject: https://lists.osmocom.org/pipermail/op25-dev/2012/subject.html
+
+Other Resources
+-----
+Websites for looking up frequencies for a given geographical area
+
+- [The Radio Reference Database](https://www.radioreference.com/apps/db/) (United States)
