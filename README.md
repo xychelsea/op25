@@ -4,22 +4,6 @@ Forked from [boatbod/op25](git://github.com/boatbod/op25) "master" branch on Jun
 
 Updated June 19, 2020
 
-## Index:
-
-- OP25 Hardware
-- OP25 Software
-- OP25 Install Guides
-- Coming Soon: Our ASD OP25 Install Guide
-- OP25 Troubleshooting Info
-- Tech Support
-- OP25 References
-- Tutorials
-- Websites for looking up frequencies for a given geographical area
-- Standards
-- P25 Sample files (for testing)
-- Wikis
-- OP25 Dev Mailing List
-
 ## Installation
 
 These high level instructions will lead you through installing op25 and liquidsoap
@@ -34,6 +18,32 @@ the loopback driver (aloop).
 
 There are many refinements which should be made to these instructions, particularly how
 to configure liquidsoap and op25 to properly auto-start at boot time.
+
+### Prerequisites
+
+```bash
+sudo apt-get update
+sudo apt-get build-dep gnuradio
+sudo apt-get install \
+	build-essential \
+	cmake \
+	doxygen \
+	git \
+	gnuradio \
+	gnuradio-dev \
+	gnuplot-x11 \
+	gr-osmosdr \
+	libhackrf-dev \
+	libitpp-dev \
+	libpcap-dev \
+	librtlsdr-dev \
+	libuhd-dev \
+	pkg-config \
+	python-numpy \
+	python-requests \
+	python-waitress \
+	swig
+```
 
 ### Install OP25
 
