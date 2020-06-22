@@ -226,6 +226,7 @@ Installation
 
 ### Tutorials
 
+- [Aaron Swartz Day OP25 Guide](https://aaronswartzday.org/op25/)
 - [OP25 For Dummies](https://www.hagensieker.com/wordpress/2018/07/17/op25-for-dummies/) – Or how to build a police scanner for $30 (Part 1)
 - Trunked Radio: [A Guide](https://www.andrewmohawk.com/2020/06/12/trunked-radio-a-guide/) (June 12, 2020) by Andrew Nohawk
 - [Introductory Tour of the GNU Radio Project](http://www.joshknows.com/gnuradio), by Josh Blum
