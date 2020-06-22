@@ -39,5 +39,5 @@ RUN git clone git://github.com/xychelsea/op25 && \
     make install && \
     ldconfig
 
-COPY ./config/ /op25/op25/gr-op25_repeater/apps/
-COPY ./rx.sh /rx.sh
+#COPY ./config/ /op25/op25/gr-op25_repeater/apps/
+#COPY ./rx.sh /rx.sh
