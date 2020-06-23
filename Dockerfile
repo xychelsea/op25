@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 ENV DEBIAN_FRONTEND=noninteractive
 ARG TZ=UTC
 
@@ -26,8 +26,6 @@ RUN apt-get update && \
     libuhd-dev \
     pkg-config \
     python-numpy \
-    python-requests \
-    python-waitress \
     swig
 
 RUN git clone git://github.com/xychelsea/op25 && \
