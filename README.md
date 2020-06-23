@@ -6,15 +6,9 @@ Updated June 19, 2020
 
 ## Installation
 
-These high level instructions will lead you through installing op25 and liquidsoap
-on any Debian based Linux system. It is geared towards the Raspberry Pi3B which is
-inexpensive but yet just powerful enough to receive, decode and stream P25 trunked
-radio system utilizing either Phase 1 or Phase 2 audio codecs.
+These high level instructions will lead you through installing op25 on any Debian or Ubuntu based Linux system. This software is geared towards the Raspberry Pi3B which is inexpensive but yet just powerful enough to receive, decode and stream P25 trunked radio system utilizing either the Phase 1 or Phase 2 audio codecs.
 
-It is possible to configure and use OP25 with other streaming software (such as Darkice)
-but this setup has the advantage of completely avoiding use of the ALSA sound subsystem
-with has proven itself to be someway quirky and prone to problems particularly when using
-the loopback driver (aloop).
+It is possible to configure and use OP25 with liquidsoap or other streaming software (such as Icecast or Darkice) but using liquidsoap setup has the advantage of completely avoiding use of the ALSA sound subsystem with has proven itself to be someway quirky and prone to problems particularly when using the loopback driver (aloop).
 
 There are many refinements which should be made to these instructions, particularly how
 to configure liquidsoap and op25 to properly auto-start at boot time.
@@ -103,13 +97,28 @@ Follow prompts and set up appropriate passwords. Then, using your favorite text 
 </listen-socket>
 ```
 
+## Docker Container
+
+### Building the container
+To build the docker container, clone the main (trunk) branch from the GitHub repository.
+
+```bash
+git clone git://github.com/xychelsea/op25.git && cd ./op25
+```
+
+Then, simply build the container for your system with the basic Dockerfile provided.
+
+```bash
+docker build -t xychelsea/op25:latest -f Dockerfile .
+```
+
 ## Configuration
+
+## Running OP25 and liquidsoap
 
 Set up rx.py command line options, trunk.tsv, meta.json and other files necessary to
 make a working instance of op25. Edit op25.liq to configure local sound options and/or
 streaming to icecast server.
-
-## Run OP25 and liquidsoap
 
 The screen tool can enable you to detach terminal screens.
 
@@ -165,9 +174,11 @@ sudo systemctl start op25-liq op25-rx
 
 You can subsequently stop the services by issuing the following command:
 
+```bash
 sudo systemctl stop op25-rx
 or
 sudo systemctl stop op25-rx op25-liq
+```
 
 ### Icecast2 low-latency setups (optional)
 
@@ -176,8 +187,11 @@ To decrease latency for low-latency environments, such as
 highspeed networks, edit /etc/icecast2/icecast.xml to 
 disable Icecast2 burst-on-connect and reduce burst-size.
 
+```bash
 sudo vi /etc/icecast2/icecast.xml
+```
 
+```xml
 <!-- If enabled, this will provide a burst of data when a client
 	 first connects, thereby significantly reducing the startup
 	 time for listeners that do substantial buffering. However,
@@ -189,8 +203,7 @@ sudo vi /etc/icecast2/icecast.xml
 	 specific on how much to burst. Most people won't need to
 	 change from the default 64k. Applies to all mountpoints  -->
 <burst-size>0</burst-size>
-
-
+```
 
 ## Hardware Requirements
 
